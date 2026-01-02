@@ -1,4 +1,4 @@
-- name: Trivy image gate
+ name: Trivy image gate
   uses: aquasecurity/trivy-action@master
   with:
     image-ref: demo-app:ci
