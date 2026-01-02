@@ -1,6 +1,5 @@
-FROM node:18-alpine
+FROM debian:9-slim
 WORKDIR /app
 COPY . .
-RUN npm install
-CMD ["node", "-e", "console.log('hello')"]
+CMD ["bash"]
 
