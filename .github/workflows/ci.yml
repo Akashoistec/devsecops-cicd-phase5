@@ -24,5 +24,17 @@ jobs:
           vuln-type: os,library
           ignore-unfixed: false
           severity: CRITICAL
-          exit-code: 0
+          exit-code: 1
 
+      - name: Attempt to read secret (PR)
+        if: github.event_name == 'pull_request'
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
+        run: |
+          if [ -z "$DEMO_SECRET" ]; then
+            echo "SECRET NOT AVAILABLE (expected)"
+            exit 0
+          else
+            echo "SECRET EXPOSED (bad)"
+            exit 1
+          fi
