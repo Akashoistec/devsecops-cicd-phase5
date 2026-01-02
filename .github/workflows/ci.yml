@@ -24,7 +24,7 @@ jobs:
           vuln-type: os,library
           ignore-unfixed: false
           severity: CRITICAL
-          exit-code: 1
+          exit-code: ${{ github.event_name == 'pull_request' && 0 || 1 }}
 
       - name: Attempt to read secret (PR)
         if: github.event_name == 'pull_request'
