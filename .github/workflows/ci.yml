@@ -1,9 +1,27 @@
- name: Trivy image gate
-  uses: aquasecurity/trivy-action@master
-  with:
-    image-ref: demo-app:ci
-    scanners: vuln
-    ignore-unfixed: false
-    severity: CRITICAL
-    exit-code: 1
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  trivy-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t demo-app:ci .
+
+      - name: Trivy image gate
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: demo-app:ci
+          scanners: vuln
+          ignore-unfixed: false
+          severity: CRITICAL
+          exit-code: 1
 
