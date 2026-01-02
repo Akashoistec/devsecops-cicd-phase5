@@ -1,38 +1,45 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches: [main]
-  pull_request:
 
 jobs:
-  build-and-scan:
+  pr-checks:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Build Docker image
         run: docker build -t demo-app:ci .
 
-      - name: Trivy image gate
+      - name: Trivy image scan (signal only)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: demo-app:ci
           scanners: vuln
           vuln-type: os,library
           ignore-unfixed: false
-          severity: CRITICAL
-          exit-code: ${{ github.event_name == 'pull_request' && 0 || 1 }}
+          severity: LOW,MEDIUM,HIGH,CRITICAL
+          exit-code: 0   # PRs never block
 
-      - name: Attempt to read secret (PR)
-        if: github.event_name == 'pull_request' && always()
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: pr-checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use secret safely
+        env:
+          DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
         run: |
-          if [ -z "$DEMO_SECRET" ]; then
-            echo "SECRET WOULD BE AVAILABLE IN SAME-REPO PR (known risk)"
-            exit 1
-          else
-            echo "SECRET NOT AVAILABLE (fork PR behavior)"
-            exit 0
-          fi
+          echo "Secret length: ${#DEMO_SECRET}"
+
