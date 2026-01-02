@@ -27,7 +27,7 @@ jobs:
           exit-code: ${{ github.event_name == 'pull_request' && 0 || 1 }}
 
       - name: Attempt to read secret (PR)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         env:
           DEMO_SECRET: ${{ secrets.DEMO_SECRET }}
         run: |
