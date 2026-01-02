@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  trivy-gate:
+  build-and-scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,12 +17,12 @@ jobs:
         run: docker build -t demo-app:ci .
 
       - name: Trivy image gate
-  uses: aquasecurity/trivy-action@master
-  with:
-    image-ref: demo-app:ci
-    scanners: vuln
-    vuln-type: os,library
-    ignore-unfixed: false
-    severity: CRITICAL
-    exit-code: 1
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: demo-app:ci
+          scanners: vuln
+          vuln-type: os,library
+          ignore-unfixed: false
+          severity: CRITICAL
+          exit-code: 1
 
