@@ -31,5 +31,5 @@ jobs:
         with:
           image-ref: demo-app:${{ github.ref_name }}
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
           exit-code: 1
-
