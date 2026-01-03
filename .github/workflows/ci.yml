@@ -32,4 +32,5 @@ jobs:
           image-ref: demo-app:${{ github.ref_name }}
           severity: CRITICAL,HIGH
           ignore-unfixed: true
+          ignorefile: security-exceptions.yaml
           exit-code: 1

@@ -1,0 +1,5 @@
+exceptions:
+  - id: CVE-2021-23337
+    reason: "Dependency used only in build-time, not runtime"
+    owner: "appsec-team"
+    expires: "2026-03-31"
